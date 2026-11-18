@@ -12,9 +12,9 @@ export default function ChartCard({
     <div className="nex-card chart-card">
       <div className="nex-card-header">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <h3 className="nex-card-title">{title}</h3>
-            {badge && <span className="badge badge-primary" style={{ fontSize: '0.6875rem' }}>{badge}</span>}
+            {badge && <span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>{badge}</span>}
           </div>
           {subtitle && (
             <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
@@ -29,7 +29,7 @@ export default function ChartCard({
         )}
       </div>
 
-      {/* Optional Contextual Metric Summary Bar */}
+      {/* Optional Contextual Metric Bar */}
       {contextBar}
 
       <div className="chart-card-body">

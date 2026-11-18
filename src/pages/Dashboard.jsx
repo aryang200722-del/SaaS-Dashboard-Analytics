@@ -7,12 +7,10 @@ import {
   UserMinus,
   Wallet,
   Calendar,
-  Sparkles,
-  ArrowUpRight,
-  Filter,
+  RotateCw,
+  ShieldCheck,
   CheckCircle2,
-  Layers,
-  Activity
+  ChevronDown
 } from 'lucide-react';
 import {
   AreaChart,
@@ -47,12 +45,13 @@ export default function Dashboard() {
 
   // Revenue chart view mode: 'comparison' (Revenue vs Target) or 'gross' (Gross Only)
   const [revenueViewMode, setRevenueViewMode] = useState('comparison');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const dateOptions = [
-    { id: '7d', label: 'Last 7 days' },
-    { id: '30d', label: 'Last 30 days' },
-    { id: '90d', label: 'Last 90 days' },
-    { id: 'year', label: 'This year' }
+    { id: '7d', label: 'Last 7 days', range: 'Nov 12 – Nov 18, 2026' },
+    { id: '30d', label: 'Last 30 days', range: 'Oct 20 – Nov 18, 2026' },
+    { id: '90d', label: 'Last 90 days', range: 'Aug 21 – Nov 18, 2026' },
+    { id: 'year', label: 'This year', range: 'Jan 01 – Nov 18, 2026' }
   ];
 
   // Active metrics based on dateFilter
@@ -60,19 +59,41 @@ export default function Dashboard() {
     return DASHBOARD_METRICS[dateFilter] || DASHBOARD_METRICS['30d'];
   }, [dateFilter]);
 
+  // Dynamic time-of-day greeting
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }, []);
+
   const handleDateFilterChange = (id) => {
     setDateFilter(id);
+    const selected = dateOptions.find((d) => d.id === id);
     addToast({
-      title: 'Filter Applied',
-      message: `Analytics updated for ${dateOptions.find((d) => d.id === id)?.label}.`,
+      title: 'Date Range Updated',
+      message: `Displaying metrics for ${selected?.range || selected?.label}.`,
       type: 'info',
       duration: 2000
     });
   };
 
+  const handleRefreshTelemetry = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+      addToast({
+        title: 'Telemetry Synced',
+        message: 'Metrics re-calculated against client-side transaction ledger.',
+        type: 'success',
+        duration: 2500
+      });
+    }, 400);
+  };
+
   // Chart theme colors
   const strokeColor = isDark ? 'rgba(255, 255, 255, 0.05)' : '#f1f5f9';
-  const textColor = isDark ? '#94a3b8' : '#64748b';
+  const textColor = isDark ? '#71717a' : '#64748b';
 
   // Enhanced Revenue Chart Tooltip
   const RevenueTooltip = ({ active, payload, label }) => {
@@ -86,36 +107,36 @@ export default function Dashboard() {
       return (
         <div className="recharts-custom-tooltip">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.4rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.35rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.85rem' }}>
+            <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.8125rem' }}>
               {dataPoint?.fullDate || label}
             </span>
             <span
               style={{
-                fontSize: '0.7rem',
-                fontWeight: 700,
+                fontSize: '0.6875rem',
+                fontWeight: 600,
                 color: isAhead ? 'var(--success-text)' : 'var(--danger-text)',
                 background: isAhead ? 'var(--success-bg)' : 'var(--danger-bg)',
                 padding: '0.1rem 0.35rem',
                 borderRadius: 'var(--radius-xs)'
               }}
             >
-              {isAhead ? `+${dataPoint?.variance || 'Ahead'}` : 'Below'}
+              {isAhead ? `+${dataPoint?.variance || 'Ahead'}` : 'Below target'}
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', fontSize: '0.8rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', fontSize: '0.78125rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1.25rem' }}>
-              <span style={{ color: 'var(--brand-accent)' }}>Realized Revenue:</span>
+              <span style={{ color: 'var(--text-secondary)' }}>Gross Revenue:</span>
               <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{formatCurrency(revenue)}</strong>
             </div>
 
             {revenueViewMode === 'comparison' && (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1.25rem' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Projected Target:</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Target Projection:</span>
                   <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>{formatCurrency(target)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1.25rem', paddingTop: '0.3rem', borderTop: '1px dashed var(--border-subtle)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1.25rem', paddingTop: '0.25rem', borderTop: '1px dashed var(--border-subtle)' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Net Variance:</span>
                   <strong style={{ color: isAhead ? 'var(--success-text)' : 'var(--danger-text)', fontFamily: 'var(--font-mono)' }}>
                     {isAhead ? `+${formatCurrency(diff)}` : `-${formatCurrency(Math.abs(diff))}`}
@@ -135,9 +156,9 @@ export default function Dashboard() {
     if (active && payload && payload.length) {
       return (
         <div className="recharts-custom-tooltip">
-          <p style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{label}</p>
+          <p style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem', fontSize: '0.8125rem' }}>{label}</p>
           {payload.map((entry, index) => (
-            <p key={`item-${index}`} style={{ color: entry.color, display: 'flex', gap: '0.75rem', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+            <p key={`item-${index}`} style={{ color: entry.color, display: 'flex', gap: '0.75rem', justifyContent: 'space-between', fontSize: '0.78125rem' }}>
               <span>{entry.name}:</span>
               <strong>{entry.value.toLocaleString()}</strong>
             </p>
@@ -148,37 +169,61 @@ export default function Dashboard() {
     return null;
   };
 
-  // Calculate revenue total & target for contextual bar
   const totalPeriodRevenue = activeMetrics.kpis.totalRevenue.value;
-  const targetPeriodBaseline = Math.round(totalPeriodRevenue * 0.92);
+  const targetPeriodBaseline = activeMetrics.context.targetPlan;
   const varianceAmount = totalPeriodRevenue - targetPeriodBaseline;
 
   return (
     <div className="animate-fade-in">
-      {/* Header */}
-      <div className="page-header">
-        <div className="breadcrumbs">
-          <span>Nexora Cloud</span>
-          <span className="breadcrumb-separator">/</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Overview</span>
+      {/* =========================================================
+          PERSONALIZED WELCOME & CONTEXTUAL HEADER SECTION
+          ========================================================= */}
+      <div className="page-header" style={{ marginBottom: '1.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+          <div className="breadcrumbs">
+            <span>Nexora Platform</span>
+            <span className="breadcrumb-separator">/</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Overview</span>
+          </div>
+
+          {/* Sample Data vs Real Data Distinction Badge */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              fontSize: '0.72rem',
+              color: 'var(--text-muted)',
+              background: 'var(--bg-surface-elevated)',
+              border: '1px solid var(--border-default)',
+              padding: '0.2rem 0.6rem',
+              borderRadius: 'var(--radius-full)'
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--brand-primary)' }} />
+            <span>Stripe Sandbox Mode (Demo Data)</span>
+          </div>
         </div>
+
         <div className="page-header-row">
           <div>
-            <h1 className="page-title">Analytics Overview</h1>
+            <h1 className="page-title">
+              {greeting}, {user.name.split(' ')[0]}
+            </h1>
             <p className="page-description">
-              Real-time platform performance, subscription health, and revenue velocity.
+              Real-time subscription metrics across 1,429 customer accounts.
             </p>
           </div>
 
           <div className="page-actions">
-            {/* Date filter button group */}
+            {/* Functional Date Range Selector */}
             <div
               style={{
                 display: 'inline-flex',
                 background: 'var(--bg-surface-elevated)',
                 border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-md)',
-                padding: '3px',
+                padding: '2px',
                 gap: '2px'
               }}
             >
@@ -191,24 +236,36 @@ export default function Dashboard() {
                     background: dateFilter === opt.id ? 'var(--bg-card)' : 'transparent',
                     color: dateFilter === opt.id ? 'var(--text-primary)' : 'var(--text-muted)',
                     fontWeight: dateFilter === opt.id ? 600 : 500,
-                    fontSize: '0.8125rem',
-                    padding: '0.4rem 0.85rem',
+                    fontSize: '0.78125rem',
+                    padding: '0.35rem 0.75rem',
                     borderRadius: 'var(--radius-sm)',
                     cursor: 'pointer',
                     boxShadow: dateFilter === opt.id ? 'var(--shadow-sm)' : 'none',
                     transition: 'all var(--transition-fast)'
                   }}
+                  title={opt.range}
                 >
                   {opt.label}
                 </button>
               ))}
             </div>
+
+            {/* Telemetry Refresh Button */}
+            <button
+              className="btn btn-secondary btn-icon"
+              onClick={handleRefreshTelemetry}
+              title="Refresh platform telemetry"
+              aria-label="Refresh telemetry"
+              style={{ width: '34px', height: '34px' }}
+            >
+              <RotateCw size={14} style={{ animation: isRefreshing ? 'spin 0.6s linear infinite' : 'none' }} />
+            </button>
           </div>
         </div>
       </div>
 
       {/* =========================================================
-          TIER 1: PRIMARY FINANCIAL HEADLINE KPIS (2 COLUMNS)
+          TIER 1: PRIMARY FINANCIAL METRICS (2 COLUMNS)
           ========================================================= */}
       <div className="kpi-hero-grid">
         <StatCard
@@ -218,9 +275,8 @@ export default function Dashboard() {
           isPositive={activeMetrics.kpis.totalRevenue.isPositive}
           icon={DollarSign}
           isHero={true}
-          badge="Primary Financial"
           comparison={activeMetrics.kpis.totalRevenue.comparison}
-          secondaryContext={`${activeMetrics.context.runRate} Run Rate • ${activeMetrics.context.quotaPacing}`}
+          secondaryContext={`${activeMetrics.context.runRate} ARR Run Rate • ${activeMetrics.kpis.totalRevenue.secondaryContext}`}
         />
         <StatCard
           title="Monthly Recurring Revenue (MRR)"
@@ -229,14 +285,13 @@ export default function Dashboard() {
           isPositive={activeMetrics.kpis.mrr.isPositive}
           icon={TrendingUp}
           isHero={true}
-          badge="Recurring Engine"
           comparison={activeMetrics.kpis.mrr.comparison}
-          secondaryContext={`${activeMetrics.kpis.mrr.secondaryContext} • Pacing: ${activeMetrics.context.avgVelocity}`}
+          secondaryContext={`${activeMetrics.context.expansionRate} • ${activeMetrics.kpis.mrr.secondaryContext}`}
         />
       </div>
 
       {/* =========================================================
-          TIER 2: SUPPORTING OPERATIONAL KPIS (4 BALANCED COLUMNS)
+          TIER 2: SUPPORTING OPERATIONAL METRICS (4 BALANCED COLUMNS)
           ========================================================= */}
       <div className="kpi-supporting-grid">
         <StatCard
@@ -258,12 +313,11 @@ export default function Dashboard() {
           secondaryContext={activeMetrics.kpis.totalCustomers.secondaryContext}
         />
         <StatCard
-          title="Gross Churn Rate"
+          title="Net Churn Rate"
           value={`${activeMetrics.kpis.churnRate.value}%`}
           change={activeMetrics.kpis.churnRate.change}
           isPositive={activeMetrics.kpis.churnRate.isPositive}
           icon={UserMinus}
-          badge="Healthy"
           comparison={activeMetrics.kpis.churnRate.comparison}
           secondaryContext={activeMetrics.kpis.churnRate.secondaryContext}
         />
@@ -279,21 +333,20 @@ export default function Dashboard() {
       </div>
 
       {/* =========================================================
-          CHARTS SECTION: ROW 1
+          CHARTS ROW 1: REVENUE TIMELINE & DEAL VOLUME
           ========================================================= */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
-          gap: '1.5rem',
-          marginBottom: '1.5rem'
+          gap: '1.25rem',
+          marginBottom: '1.25rem'
         }}
       >
-        {/* Revenue Over Time Line/Area Chart with Contextual Header */}
+        {/* Revenue Over Time with Contextual Top Bar */}
         <ChartCard
-          title="Revenue Trajectory & Baseline"
-          subtitle={`Recurring revenue flow (${activeMetrics.context.periodLabel})`}
-          badge="Live Pacing"
+          title="Revenue Growth & Run-Rate"
+          subtitle={`Recognized revenue trajectory (${activeMetrics.dateRangeLabel})`}
           action={
             <div
               style={{
@@ -312,13 +365,13 @@ export default function Dashboard() {
                   background: revenueViewMode === 'comparison' ? 'var(--bg-card)' : 'transparent',
                   color: revenueViewMode === 'comparison' ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontSize: '0.72rem',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   padding: '0.2rem 0.5rem',
                   borderRadius: 'var(--radius-xs)',
                   cursor: 'pointer'
                 }}
               >
-                vs Target
+                vs. Target
               </button>
               <button
                 onClick={() => setRevenueViewMode('gross')}
@@ -327,7 +380,7 @@ export default function Dashboard() {
                   background: revenueViewMode === 'gross' ? 'var(--bg-card)' : 'transparent',
                   color: revenueViewMode === 'gross' ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontSize: '0.72rem',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   padding: '0.2rem 0.5rem',
                   borderRadius: 'var(--radius-xs)',
                   cursor: 'pointer'
@@ -340,24 +393,24 @@ export default function Dashboard() {
           contextBar={
             <div className="chart-context-bar">
               <div className="chart-context-metric">
-                <span className="chart-context-label">Gross Realized</span>
+                <span className="chart-context-label">Period Realized</span>
                 <span className="chart-context-val">{formatCurrency(totalPeriodRevenue)}</span>
               </div>
               <div className="chart-context-metric">
-                <span className="chart-context-label">Target Plan</span>
+                <span className="chart-context-label">Target Baseline</span>
                 <span className="chart-context-val" style={{ color: 'var(--text-secondary)' }}>
                   {formatCurrency(targetPeriodBaseline)}
                 </span>
               </div>
               <div className="chart-context-metric">
-                <span className="chart-context-label">Performance Variance</span>
+                <span className="chart-context-label">Net Variance</span>
                 <span className="chart-context-val" style={{ color: 'var(--success-text)' }}>
-                  +{formatCurrency(varianceAmount)} (+8.7%)
+                  +{formatCurrency(varianceAmount)} (+{((varianceAmount / targetPeriodBaseline) * 100).toFixed(1)}%)
                 </span>
               </div>
               <div className="chart-context-metric">
-                <span className="chart-context-label">Avg. Daily Run Rate</span>
-                <span className="chart-context-val">{activeMetrics.context.avgVelocity}</span>
+                <span className="chart-context-label">Daily Run Rate</span>
+                <span className="chart-context-val">{activeMetrics.context.avgDaily}</span>
               </div>
             </div>
           }
@@ -366,7 +419,7 @@ export default function Dashboard() {
             <AreaChart data={activeMetrics.revenueOverTime} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.28} />
+                  <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.22} />
                   <stop offset="95%" stopColor="var(--brand-primary)" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
@@ -383,9 +436,9 @@ export default function Dashboard() {
               <Area
                 type="monotone"
                 dataKey="revenue"
-                name="Gross Revenue"
+                name="Gross Volume"
                 stroke="var(--brand-primary)"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorRevenue)"
               />
@@ -394,7 +447,7 @@ export default function Dashboard() {
                   type="monotone"
                   dataKey="target"
                   name="Projected Target"
-                  stroke="#94a3b8"
+                  stroke="#71717a"
                   strokeWidth={1.5}
                   strokeDasharray="4 4"
                   dot={false}
@@ -404,11 +457,10 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Monthly Sales Bar Chart */}
+        {/* Monthly Sales & Inbound Volume */}
         <ChartCard
-          title="Sales Velocity & Deal Volume"
-          subtitle="Closed subscription units and inbound enterprise deals"
-          badge="Conversion"
+          title="Sales Volume & Closed Deals"
+          subtitle="New subscriptions and contract expansions"
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={activeMetrics.monthlySales} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
@@ -416,13 +468,13 @@ export default function Dashboard() {
               <XAxis dataKey="name" stroke={textColor} fontSize={12} tickLine={false} />
               <YAxis stroke={textColor} fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip content={<GenericTooltip />} />
-              <Bar dataKey="sales" name="Paid Subscriptions" fill="var(--chart-primary)" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="deals" name="Enterprise Deals" fill="var(--chart-secondary)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="sales" name="Paid Subscriptions" fill="var(--chart-primary)" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="deals" name="Enterprise Deals" fill="var(--chart-secondary)" radius={[3, 3, 0, 0]} />
               <Legend
                 verticalAlign="top"
                 align="right"
-                height={30}
-                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{val}</span>}
+                height={28}
+                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.72rem' }}>{val}</span>}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -430,31 +482,30 @@ export default function Dashboard() {
       </div>
 
       {/* =========================================================
-          CHARTS SECTION: ROW 2
+          CHARTS ROW 2: ACQUISITION & PLAN BREAKDOWN
           ========================================================= */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(460px, 1fr))',
-          gap: '1.5rem',
-          marginBottom: '2rem'
+          gap: '1.25rem',
+          marginBottom: '1.75rem'
         }}
       >
-        {/* Customer Acquisition Area Chart */}
+        {/* Customer Acquisition Channels */}
         <ChartCard
-          title="Customer Acquisition Pipeline"
-          subtitle="Organic virality vs paid acquisition channels"
-          badge="Inbound Funnel"
+          title="Customer Acquisition Dynamics"
+          subtitle="Organic signups vs. paid acquisition channels"
         >
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={activeMetrics.customerAcquisition} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorOrganic" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="colorPaid" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.25} />
+                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.2} />
                   <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
@@ -474,7 +525,7 @@ export default function Dashboard() {
               <Area
                 type="monotone"
                 dataKey="paid"
-                name="Targeted Outbound"
+                name="Paid Channels"
                 stroke="#06b6d4"
                 strokeWidth={2}
                 fillOpacity={1}
@@ -483,18 +534,17 @@ export default function Dashboard() {
               <Legend
                 verticalAlign="top"
                 align="right"
-                height={30}
-                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{val}</span>}
+                height={28}
+                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.72rem' }}>{val}</span>}
               />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Subscription Distribution Donut Chart */}
+        {/* Subscription Tier Breakdown */}
         <ChartCard
-          title="Subscription Tier Breakdown"
-          subtitle="Active tenant distribution across pricing plans"
-          badge="Market Share"
+          title="Active Subscription Distribution"
+          subtitle="Tenant distribution across pricing plans"
         >
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -502,9 +552,9 @@ export default function Dashboard() {
                 data={SUBSCRIPTION_DISTRIBUTION}
                 cx="50%"
                 cy="46%"
-                innerRadius={65}
-                outerRadius={98}
-                paddingAngle={4}
+                innerRadius={62}
+                outerRadius={92}
+                paddingAngle={3}
                 dataKey="value"
               >
                 {SUBSCRIPTION_DISTRIBUTION.map((entry, index) => (
@@ -514,8 +564,8 @@ export default function Dashboard() {
               <Tooltip content={<GenericTooltip />} />
               <Legend
                 verticalAlign="bottom"
-                height={36}
-                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>{val}</span>}
+                height={32}
+                formatter={(val) => <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>{val}</span>}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -523,7 +573,7 @@ export default function Dashboard() {
       </div>
 
       {/* =========================================================
-          RECENT TRANSACTIONS & PLATFORM ACTIVITY SECTION
+          RECENT INVOICES & PLATFORM ACTIVITY LEDGER
           ========================================================= */}
       <div style={{ marginBottom: '2rem' }}>
         <RecentActivity />

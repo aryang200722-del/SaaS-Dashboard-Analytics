@@ -1,0 +1,36 @@
+/**
+ * CSV Export utility for Nexora SaaS Dashboard
+ * Generates and triggers browser download of tabular records.
+ */
+
+export function exportTransactionsToCSV(transactions, filename = 'nexora-transactions.csv') {
+  if (!transactions || transactions.length === 0) return;
+
+  const headers = ['Invoice ID', 'Customer', 'Company', 'Plan', 'Amount (USD)', 'Status', 'Payment Method', 'Date'];
+
+  const rows = transactions.map((t) => [
+    `"${t.id}"`,
+    `"${t.customer}"`,
+    `"${t.company}"`,
+    `"${t.plan}"`,
+    t.amount,
+    `"${t.status}"`,
+    `"${t.method}"`,
+    `"${t.date}"`
+  ]);
+
+  const csvContent = [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

@@ -501,8 +501,7 @@
 }
 
 .stat-card-hero {
-  background: var(--kpi-hero-bg);
-  border-color: var(--kpi-hero-border);
+  border-left: 3px solid var(--brand-primary);
   position: relative;
 }
 
@@ -512,8 +511,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: var(--brand-gradient);
+  height: 1px;
+  background: var(--brand-primary);
+  opacity: 0.35;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
