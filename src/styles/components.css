@@ -460,3 +460,177 @@
     align-items: flex-start;
   }
 }
+
+/* =========================================================
+   STAT CARDS (KPIs)
+   ========================================================= */
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.stat-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stat-card-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--brand-primary-light);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+.stat-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.stat-badge.positive {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
+}
+
+.stat-badge.negative {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);
+}
+
+.stat-card-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   CHART CARDS
+   ========================================================= */
+.chart-card-body {
+  min-height: 320px;
+  height: 340px;
+  width: 100%;
+}
+
+.recharts-custom-tooltip {
+  background: var(--chart-tooltip-bg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.8125rem;
+}
+
+.recharts-custom-tooltip p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   RECENT ACTIVITY
+   ========================================================= */
+.recent-activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color var(--transition-fast);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item:hover {
+  background-color: var(--bg-surface-elevated);
+}
+
+.activity-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-text {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+  word-break: break-word;
+}
+
+.activity-user {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.activity-action {
+  color: var(--text-secondary);
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.activity-amount {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  background: var(--bg-muted);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
