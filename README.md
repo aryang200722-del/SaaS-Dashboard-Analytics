@@ -1,98 +1,68 @@
 # Nexora — Modern SaaS Analytics & Revenue Management Dashboard
 
-Nexora is a frontend-only, commercial-grade SaaS analytics and operations dashboard built with React, Vite, React Router, Recharts, Lucide Icons, and LocalStorage. Its design language is inspired by leading SaaS platforms like Stripe, Linear, and Vercel.
+Nexora is a complete, commercial-grade SaaS analytics and operations dashboard built with React 18, Vite, React Router DOM, Recharts, Lucide Icons, and LocalStorage. Designed with a sleek aesthetic inspired by Stripe, Linear, and Vercel.
 
 ---
 
-## 4-Stage Progressive Development Roadmap
+## Architecture & Progressive Development Breakdown
 
-- **[x] Stage 1 (Current)**: **Foundation & Application Shell**
-  - Project setup, Vite build toolchain, and modular folder structure.
-  - Complete Design System with CSS custom properties (Dark & Light themes, elevations, transitions, glassmorphism).
-  - App Shell: Collapsible Sidebar, sticky blurred Navbar, mobile responsive drawer.
-  - Global Search (Command Palette with `Ctrl+K` keyboard shortcut).
-  - Notification Center dropdown with simulated real-time SaaS events.
-  - User Profile dropdown with plan tier details and demo data management.
-  - Interactive Toast notification system (`ToastProvider`, `useToast`).
-  - React Router v6 navigation across all 6 core routes.
-  - LocalStorage state persistence engine and default seed data initialization.
-- **[ ] Stage 2**: **Overview Dashboard, KPI Cards & Recharts Visualizations**
-  - 6 Core KPI metric cards (Total Revenue, MRR, Total Customers, Active Subscriptions, Churn Rate, ARPU).
-  - Interactive Recharts (Revenue trend line, Monthly sales bar, Customer acquisition area, Subscription distribution pie).
-  - Multi-period date range filtering (7d, 30d, 90d, 1y).
-  - Live activity feed.
-- **[ ] Stage 3**: **Customer Management & Subscription Management**
-  - Full frontend CRUD for Customers and Subscriptions.
-  - Search, status filtering, multi-column sorting, and pagination.
-  - Add / Edit / Delete modals with form validation.
-  - Subscription plan tier upgrade and renewal tracking.
-- **[ ] Stage 4**: **Project Management, Analytics Deep Dive & Final Polish**
-  - Project tracking with progress bars, status tags, deadlines, and team members.
-  - Dedicated Analytics page with cohort trends and MRR expansion metrics.
-  - Profile & Account preferences persistence in Settings.
-  - End-to-end responsiveness and mobile polish.
+Nexora is structured into 4 cohesive stages:
+
+### Stage 1: Foundation & Application Shell
+- **Design System**: Full CSS variables supporting light and dark modes with glassmorphic accents, soft drop shadows, and responsive typography (`Plus Jakarta Sans`).
+- **Collapsible Sidebar**: Fixed/collapsible navigation with company logo, active link indicators, and badge counts.
+- **Top Navbar**: Global search trigger with `Ctrl+K` command palette, notification dropdown, theme toggle, and user profile options.
+- **Toast Notifications**: Stacked animated toast messages with auto-dismissal.
+- **LocalStorage State**: Reusable storage abstraction (`storage.js` and `useLocalStorage.js`) initializing default seed data without overwriting user changes.
+
+### Stage 2: Overview Dashboard & Charts
+- **6 KPI Metric Cards**: Total Revenue, Monthly Recurring Revenue (MRR), Total Customers, Active Subscriptions, Churn Rate, and Average Revenue Per User (ARPU).
+- **Interactive Recharts**:
+  - Revenue Over Time (Area/Line chart with smooth gradient)
+  - Sales Velocity & Deal Volume (BarChart with rounded tops)
+  - Customer Acquisition (AreaChart with organic vs. paid campaigns)
+  - Subscription Distribution (Donut PieChart with custom legend and tooltips)
+- **Interactive Date Filters**: Last 7 days, 30 days, 90 days, and This year (dynamically updating all KPIs and charts).
+- **Recent Activity Stream**: Live feed with activity badges, timestamps, and amounts.
+
+### Stage 3: Customer & Subscription Management
+- **Customer Directory**:
+  - Full CRUD operations with Add & Edit modals and Delete confirmation.
+  - Real-time search across names, emails, and companies.
+  - Multi-status (Active, Trial, Inactive) and multi-plan filtering.
+  - Multi-column sorting (Name, Company, Total Revenue, Registration Date).
+  - Configurable pagination (5, 10, 20 items per page).
+- **Subscription Management**:
+  - Plan tier overview cards for Free, Starter, Professional, and Enterprise tiers.
+  - Subscriptions data table with search and status filtering.
+  - Add subscription modal and Change Plan modal.
+  - Cancel subscription flow with state sync to customer records.
+
+### Stage 4: Project Management, Analytics & Settings
+- **Project Management**:
+  - Track projects with progress bars, status tags (Not Started, In Progress, Completed, On Hold), priorities, budgets, and deadlines.
+  - Assign and manage team member pills.
+  - Add, edit, and delete project modals.
+- **Dedicated Analytics Deep Dive**:
+  - Key SaaS unit economics: Net Revenue Retention (NRR 118%), Customer Lifetime Value (LTV $3,840), Customer Acquisition Cost (CAC $420), LTV:CAC Ratio (9.1x), and Quick Ratio (3.4).
+  - Cohort expansion trends, net new MRR velocity, and revenue contribution by plan.
+- **Platform & Profile Settings**:
+  - Profile customization (Name, Email, Role, Company, Avatar image preview).
+  - Dark / Light mode preference with persistent state.
+  - Notification toggles (Billing invoices, desktop alerts, weekly digests).
+  - Factory demo data reset to restore original seed data at any time.
 
 ---
 
 ## Technology Stack
 
-- **Framework**: React 18 (ES6+, Functional Components & Hooks)
-- **Bundler**: Vite 5
+- **Framework**: React 18
+- **Build Tool**: Vite 5
 - **Routing**: React Router DOM v6
+- **Charts**: Recharts
 - **Icons**: Lucide React
-- **Data Visualizations**: Recharts
-- **Styling**: Pure CSS3 with CSS custom properties (Design System variables), flexbox, grid, glassmorphism, responsive breakpoints
-- **Storage**: Client-side `localStorage` with JSON serialization and versioned prefixes
-
----
-
-## Folder Structure
-
-```
-c:\Users\LENOVO\Documents\Saas Dashboard\
-├── index.html
-├── package.json
-├── vite.config.js
-├── README.md
-└── src/
-    ├── main.jsx
-    ├── App.jsx
-    ├── components/
-    │   ├── common/
-    │   │   ├── NotificationPanel.jsx
-    │   │   ├── StageIndicator.jsx
-    │   │   ├── ThemeToggle.jsx
-    │   │   ├── ToastContainer.jsx
-    │   │   └── UserProfileDropdown.jsx
-    │   └── layout/
-    │       ├── AppLayout.jsx
-    │       ├── GlobalSearchModal.jsx
-    │       ├── Navbar.jsx
-    │       └── Sidebar.jsx
-    ├── context/
-    │   ├── AppContext.jsx
-    │   ├── ThemeContext.jsx
-    │   └── ToastContext.jsx
-    ├── data/
-    │   └── mockData.js
-    ├── hooks/
-    │   └── useLocalStorage.js
-    ├── pages/
-    │   ├── Analytics.jsx
-    │   ├── Customers.jsx
-    │   ├── Dashboard.jsx
-    │   ├── Projects.jsx
-    │   ├── Settings.jsx
-    │   └── Subscriptions.jsx
-    ├── styles/
-    │   ├── components.css
-    │   ├── global.css
-    │   ├── layout.css
-    │   └── variables.css
-    └── utils/
-        ├── formatters.js
-        └── storage.js
-```
+- **Storage**: Browser `localStorage` (Zero backend required)
+- **Styling**: CSS3 with CSS Custom Properties, Flexbox, CSS Grid, and Glassmorphism
 
 ---
 
@@ -118,17 +88,3 @@ npm run build
 ```bash
 npm run preview
 ```
-
----
-
-## Stage 1 Verification Checklist
-
-- [x] Zero compilation/build errors on Vite build.
-- [x] Theme switcher dynamically toggles between Dark and Light mode without page reload.
-- [x] Sidebar expands and collapses smoothly, retaining collapsed state in LocalStorage.
-- [x] Navbar includes search palette trigger, unread notification badges, theme toggle, and profile dropdown.
-- [x] Global Search (`Ctrl + K` or `Cmd + K`) allows instant keyboard navigation and selection across pages and actions.
-- [x] Toast notification system displays stacked animated toasts for actions and status changes.
-- [x] All 6 routes render smoothly with breadcrumbs and contextual headers.
-- [x] Settings page allows updating profile name, email, company, and role, persisting changes directly to LocalStorage.
-- [x] Demo data reset action clears local state and reloads default seed data with confirmation.

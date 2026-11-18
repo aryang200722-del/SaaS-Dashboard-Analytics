@@ -9,7 +9,11 @@ import {
   Sun,
   RefreshCw,
   Save,
-  CheckCircle2
+  Bell,
+  Globe,
+  Lock,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeContext';
@@ -21,16 +25,25 @@ export default function Settings() {
   const { addToast } = useToast();
 
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    company: user.company,
-    role: user.role,
-    timezone: user.timezone || 'UTC -05:00 (EST)'
+    name: user.name || '',
+    email: user.email || '',
+    company: user.company || '',
+    role: user.role || '',
+    avatar: user.avatar || '',
+    timezone: user.timezone || 'UTC -05:00 (EST)',
+    currency: user.currency || 'USD',
+    emailNotifications: user.emailNotifications ?? true,
+    desktopNotifications: user.desktopNotifications ?? true,
+    marketingEmails: user.marketingEmails ?? false,
+    twoFactorEnabled: user.twoFactorEnabled ?? true
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   const handleSave = (e) => {
@@ -46,7 +59,13 @@ export default function Settings() {
         email: 'alex.vance@nexora.io',
         company: 'Nexora Cloud Inc.',
         role: 'Founder & CEO',
-        timezone: 'UTC -05:00 (EST)'
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        timezone: 'UTC -05:00 (EST)',
+        currency: 'USD',
+        emailNotifications: true,
+        desktopNotifications: true,
+        marketingEmails: false,
+        twoFactorEnabled: true
       });
     }
   };
@@ -63,13 +82,13 @@ export default function Settings() {
           <div>
             <h1 className="page-title">Platform & Profile Settings</h1>
             <p className="page-description">
-              Customize your profile, display preferences, and manage client-side storage states.
+              Manage your personal credentials, workspace preferences, notification feeds, and local storage state.
             </p>
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Profile Card */}
         <div className="nex-card">
           <div className="nex-card-header">
@@ -81,6 +100,43 @@ export default function Settings() {
           </div>
           <div className="nex-card-body">
             <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Avatar Preview */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <img
+                  src={formData.avatar}
+                  alt={formData.name}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid var(--brand-primary)'
+                  }}
+                  onError={(e) => (e.target.style.display = 'none')}
+                />
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--text-secondary)' }}>
+                    Avatar Image URL
+                  </label>
+                  <input
+                    type="url"
+                    name="avatar"
+                    value={formData.avatar}
+                    onChange={handleChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.45rem 0.75rem',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--border-default)',
+                      background: 'var(--bg-input)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
               <div>
                 <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
                   Display Name
@@ -105,7 +161,7 @@ export default function Settings() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                  Work Email
+                  Work Email Address
                 </label>
                 <input
                   type="email"
@@ -128,7 +184,7 @@ export default function Settings() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                    Role / Title
+                    Title / Role
                   </label>
                   <input
                     type="text"
@@ -148,7 +204,7 @@ export default function Settings() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                    Company
+                    Organization
                   </label>
                   <input
                     type="text"
@@ -178,20 +234,20 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Preferences & Storage Control */}
+        {/* Preferences & System Options */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Appearance Card */}
           <div className="nex-card">
             <div className="nex-card-header">
               <span className="nex-card-title">
                 {isDark ? <Moon size={18} style={{ color: 'var(--brand-primary)' }} /> : <Sun size={18} style={{ color: 'var(--warning-text)' }} />}
-                <span>Appearance & Theme</span>
+                <span>Interface Theme</span>
               </span>
-              <span className="badge badge-info">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
+              <span className="badge badge-info">{isDark ? 'Dark Theme' : 'Light Theme'}</span>
             </div>
             <div className="nex-card-body">
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-                Toggle between premium dark and light high-contrast themes. Your preference is persisted in browser storage.
+                Select your preferred dashboard appearance. The theme is automatically saved to LocalStorage.
               </p>
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button
@@ -214,7 +270,63 @@ export default function Settings() {
             </div>
           </div>
 
-          {/* Reset Demo Data Card */}
+          {/* Notification Preferences */}
+          <div className="nex-card">
+            <div className="nex-card-header">
+              <span className="nex-card-title">
+                <Bell size={18} style={{ color: 'var(--info-text)' }} />
+                <span>Notification Preferences</span>
+              </span>
+              <span className="badge badge-neutral">Preferences</span>
+            </div>
+            <div className="nex-card-body">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.875rem', color: 'var(--text-primary)', display: 'block' }}>Email Billing Invoices</strong>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Send PDF receipts for all successful client transactions</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="emailNotifications"
+                    checked={formData.emailNotifications}
+                    onChange={handleChange}
+                    style={{ accentColor: 'var(--brand-primary)', width: '18px', height: '18px' }}
+                  />
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.875rem', color: 'var(--text-primary)', display: 'block' }}>Desktop Alerts</strong>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Show popups for high-priority plan upgrades and spikes</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="desktopNotifications"
+                    checked={formData.desktopNotifications}
+                    onChange={handleChange}
+                    style={{ accentColor: 'var(--brand-primary)', width: '18px', height: '18px' }}
+                  />
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.875rem', color: 'var(--text-primary)', display: 'block' }}>Weekly Digest</strong>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Receive an executive summary of MRR growth every Monday</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    name="marketingEmails"
+                    checked={formData.marketingEmails}
+                    onChange={handleChange}
+                    style={{ accentColor: 'var(--brand-primary)', width: '18px', height: '18px' }}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Demo Data Reset Card */}
           <div className="nex-card">
             <div className="nex-card-header">
               <span className="nex-card-title">
@@ -225,9 +337,14 @@ export default function Settings() {
             </div>
             <div className="nex-card-body">
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-                Reset customers, subscriptions, projects, and settings back to default seed records.
+                Reset customers, subscriptions, projects, and custom changes back to the original demo values.
               </p>
-              <button type="button" className="btn btn-secondary" onClick={handleResetData} style={{ color: 'var(--warning-text)' }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleResetData}
+                style={{ color: 'var(--warning-text)' }}
+              >
                 <RefreshCw size={15} />
                 <span>Reset to Factory Defaults</span>
               </button>
