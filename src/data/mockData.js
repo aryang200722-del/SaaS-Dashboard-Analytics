@@ -24,7 +24,7 @@ export const INITIAL_NOTIFICATIONS = [
     title: 'Enterprise Upgrade',
     message: 'Acme Corp upgraded to Enterprise Annual tier ($4,800/mo).',
     type: 'success',
-    timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(), // 12 mins ago
+    timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
     read: false
   },
   {
@@ -32,7 +32,7 @@ export const INITIAL_NOTIFICATIONS = [
     title: 'Invoice Settled',
     message: 'Stripe processed payout #INV-2026-891 for $28,450.00.',
     type: 'info',
-    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 mins ago
+    timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
     read: false
   },
   {
@@ -40,7 +40,7 @@ export const INITIAL_NOTIFICATIONS = [
     title: 'API Rate Spike',
     message: 'EU cluster reached 86% of max allocated burst throughput.',
     type: 'warning',
-    timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(), // 3 hours ago
+    timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
     read: false
   },
   {
@@ -48,7 +48,7 @@ export const INITIAL_NOTIFICATIONS = [
     title: 'New Customer Registered',
     message: 'Horizon Robotics joined the Professional tier trial.',
     type: 'info',
-    timestamp: new Date(Date.now() - 1000 * 60 * 360).toISOString(), // 6 hours ago
+    timestamp: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
     read: true
   },
   {
@@ -56,7 +56,7 @@ export const INITIAL_NOTIFICATIONS = [
     title: 'Weekly Automated Backup',
     message: 'Edge database snapshots verified and backed up successfully.',
     type: 'info',
-    timestamp: new Date(Date.now() - 1000 * 60 * 1440).toISOString(), // 1 day ago
+    timestamp: new Date(Date.now() - 1000 * 60 * 1440).toISOString(),
     read: true
   }
 ];
@@ -371,76 +371,187 @@ export const SEARCHABLE_ITEMS = [
   { id: 's-2', title: 'Toggle Light / Dark Mode', category: 'Actions', action: 'toggle_theme', icon: 'Moon' }
 ];
 
+export const RECENT_TRANSACTIONS = [
+  {
+    id: 'INV-2026-894',
+    customer: 'Sarah Connor',
+    company: 'Cyberdyne Systems',
+    plan: 'Enterprise Annual',
+    amount: 9990,
+    status: 'Paid',
+    method: 'Visa •••• 4242',
+    date: '14m ago',
+    type: 'Renewal'
+  },
+  {
+    id: 'INV-2026-893',
+    customer: 'David Kim',
+    company: 'Vortex AI',
+    plan: 'Enterprise Monthly',
+    amount: 1499,
+    status: 'Paid',
+    method: 'Mastercard •••• 8821',
+    date: '1h ago',
+    type: 'Monthly'
+  },
+  {
+    id: 'INV-2026-892',
+    customer: 'Marcus Chen',
+    company: 'Hyperion Data',
+    plan: '5x Add-on Seats',
+    amount: 450,
+    status: 'Paid',
+    method: 'Amex •••• 1004',
+    date: '5h ago',
+    type: 'Addon'
+  },
+  {
+    id: 'INV-2026-891',
+    customer: 'Elena Rostova',
+    company: 'NovaSoft Labs',
+    plan: 'Starter Monthly',
+    amount: 49,
+    status: 'Paid',
+    method: 'Visa •••• 3019',
+    date: '8h ago',
+    type: 'Monthly'
+  },
+  {
+    id: 'INV-2026-890',
+    customer: 'Lucas Silva',
+    company: 'Aurora FinTech',
+    plan: 'Starter Monthly',
+    amount: 49,
+    status: 'Paid',
+    method: 'Visa •••• 9920',
+    date: '1d ago',
+    type: 'Conversion'
+  },
+  {
+    id: 'INV-2026-889',
+    customer: 'Amara Okafor',
+    company: 'Solis Energy',
+    plan: 'Professional Monthly',
+    amount: 299,
+    status: 'Refunded',
+    method: 'Mastercard •••• 5512',
+    date: '2d ago',
+    type: 'Refund'
+  }
+];
+
 export const RECENT_ACTIVITIES = [
   {
     id: 'act-1',
     user: 'Sarah Connor',
     action: 'upgraded to Enterprise Annual Plan',
-    amount: '$9,990',
+    amount: '+$9,990/yr',
     type: 'upgrade',
-    time: '14 minutes ago'
+    time: '14m ago'
   },
   {
     id: 'act-2',
     user: 'David Kim',
     action: 'renewed Enterprise Tier for 12 months',
-    amount: '$11,988',
+    amount: '+$1,499/mo',
     type: 'renewal',
-    time: '1 hour ago'
+    time: '1h ago'
   },
   {
     id: 'act-3',
     user: 'Aria Montgomery',
-    action: 'registered new workspace OmniStream Media',
-    amount: 'Trial',
+    action: 'registered workspace OmniStream Media',
+    amount: '14d Trial',
     type: 'signup',
-    time: '3 hours ago'
+    time: '3h ago'
   },
   {
     id: 'act-4',
     user: 'Marcus Chen',
-    action: 'added 5 developer seats to Hyperion Data',
-    amount: '$450/mo',
-    type: 'upgrade',
-    time: '5 hours ago'
+    action: 'provisioned 5 developer API seats',
+    amount: '+$450/mo',
+    type: 'expansion',
+    time: '5h ago'
   },
   {
     id: 'act-5',
     user: 'Elena Rostova',
-    action: 'settled monthly recurring invoice #INV-4019',
-    amount: '$49',
+    action: 'settled automated invoice #INV-2026-891',
+    amount: '$49.00',
     type: 'payment',
-    time: '8 hours ago'
+    time: '8h ago'
   },
   {
     id: 'act-6',
     user: 'Lucas Silva',
-    action: 'converted from Starter Trial to Paid Starter',
-    amount: '$49/mo',
+    action: 'converted from Starter Trial to Paid Plan',
+    amount: '+$49/mo',
     type: 'conversion',
-    time: '1 day ago'
+    time: '1d ago'
   }
 ];
 
 // Analytics & KPI Datasets per Date Range (7d, 30d, 90d, year)
 export const DASHBOARD_METRICS = {
   '7d': {
+    context: {
+      periodLabel: 'Nov 11 – Nov 18, 2026',
+      runRate: '$1.78M ARR',
+      quotaPacing: '104% of weekly target',
+      avgVelocity: '$4,892 / day'
+    },
     kpis: {
-      totalRevenue: { value: 34250, change: 8.4, isPositive: true },
-      mrr: { value: 24800, change: 2.1, isPositive: true },
-      totalCustomers: { value: 1429, change: 3.2, isPositive: true },
-      activeSubscriptions: { value: 1280, change: 2.8, isPositive: true },
-      churnRate: { value: 1.4, change: -0.3, isPositive: true }, // lower churn is positive
-      arpu: { value: 98, change: 1.9, isPositive: true }
+      totalRevenue: {
+        value: 34250,
+        change: 8.4,
+        isPositive: true,
+        comparison: '+$2,650 vs previous 7d',
+        secondaryContext: '104% to quota'
+      },
+      mrr: {
+        value: 24800,
+        change: 2.1,
+        isPositive: true,
+        comparison: '+$510 net new MRR',
+        secondaryContext: '102.1% net expansion'
+      },
+      totalCustomers: {
+        value: 1429,
+        change: 3.2,
+        isPositive: true,
+        comparison: '+44 new accounts',
+        secondaryContext: '98.8% retention'
+      },
+      activeSubscriptions: {
+        value: 1280,
+        change: 2.8,
+        isPositive: true,
+        comparison: '+35 active plans',
+        secondaryContext: '149 active trials'
+      },
+      churnRate: {
+        value: 1.4,
+        change: -0.3,
+        isPositive: true,
+        comparison: '0.3% below target',
+        secondaryContext: 'Benchmark: <2.5%'
+      },
+      arpu: {
+        value: 98,
+        change: 1.9,
+        isPositive: true,
+        comparison: '+$1.80 per tenant',
+        secondaryContext: 'Expansion driven'
+      }
     },
     revenueOverTime: [
-      { date: 'Mon', revenue: 4200, target: 4000 },
-      { date: 'Tue', revenue: 4800, target: 4200 },
-      { date: 'Wed', revenue: 5100, target: 4500 },
-      { date: 'Thu', revenue: 4600, target: 4300 },
-      { date: 'Fri', revenue: 5900, target: 4800 },
-      { date: 'Sat', revenue: 4400, target: 4100 },
-      { date: 'Sun', revenue: 5250, target: 4400 }
+      { date: 'Mon', fullDate: 'Nov 12', revenue: 4200, target: 4000, variance: '+5.0%' },
+      { date: 'Tue', fullDate: 'Nov 13', revenue: 4800, target: 4200, variance: '+14.3%' },
+      { date: 'Wed', fullDate: 'Nov 14', revenue: 5100, target: 4500, variance: '+13.3%' },
+      { date: 'Thu', fullDate: 'Nov 15', revenue: 4600, target: 4300, variance: '+7.0%' },
+      { date: 'Fri', fullDate: 'Nov 16', revenue: 5900, target: 4800, variance: '+22.9%' },
+      { date: 'Sat', fullDate: 'Nov 17', revenue: 4400, target: 4100, variance: '+7.3%' },
+      { date: 'Sun', fullDate: 'Nov 18', revenue: 5250, target: 4400, variance: '+19.3%' }
     ],
     monthlySales: [
       { name: 'Mon', sales: 12, deals: 4 },
@@ -462,19 +573,61 @@ export const DASHBOARD_METRICS = {
     ]
   },
   '30d': {
+    context: {
+      periodLabel: 'Oct 19 – Nov 18, 2026',
+      runRate: '$1.54M ARR',
+      quotaPacing: '108% of monthly target',
+      avgVelocity: '$4,281 / day'
+    },
     kpis: {
-      totalRevenue: { value: 128450, change: 14.2, isPositive: true },
-      mrr: { value: 24800, change: 8.6, isPositive: true },
-      totalCustomers: { value: 1429, change: 12.4, isPositive: true },
-      activeSubscriptions: { value: 1280, change: 9.1, isPositive: true },
-      churnRate: { value: 1.8, change: -0.4, isPositive: true },
-      arpu: { value: 102, change: 5.2, isPositive: true }
+      totalRevenue: {
+        value: 128450,
+        change: 14.2,
+        isPositive: true,
+        comparison: '+$15,920 vs previous 30d',
+        secondaryContext: '108% to target'
+      },
+      mrr: {
+        value: 24800,
+        change: 8.6,
+        isPositive: true,
+        comparison: '+$1,960 net new MRR',
+        secondaryContext: '106.8% net expansion'
+      },
+      totalCustomers: {
+        value: 1429,
+        change: 12.4,
+        isPositive: true,
+        comparison: '+158 new accounts',
+        secondaryContext: '98.2% retention'
+      },
+      activeSubscriptions: {
+        value: 1280,
+        change: 9.1,
+        isPositive: true,
+        comparison: '+107 active plans',
+        secondaryContext: '89.6% conversion'
+      },
+      churnRate: {
+        value: 1.8,
+        change: -0.4,
+        isPositive: true,
+        comparison: '0.4% below last period',
+        secondaryContext: 'Benchmark: <2.5%'
+      },
+      arpu: {
+        value: 102,
+        change: 5.2,
+        isPositive: true,
+        comparison: '+$5.00 per tenant',
+        secondaryContext: 'Tier expansion'
+      }
     },
     revenueOverTime: [
-      { date: 'Week 1', revenue: 27500, target: 25000 },
-      { date: 'Week 2', revenue: 31200, target: 28000 },
-      { date: 'Week 3', revenue: 33900, target: 30000 },
-      { date: 'Week 4', revenue: 35850, target: 32000 }
+      { date: 'Week 1', fullDate: 'Oct 19 – Oct 25', revenue: 27500, target: 25000, variance: '+10.0%' },
+      { date: 'Week 2', fullDate: 'Oct 26 – Nov 01', revenue: 31200, target: 28000, variance: '+11.4%' },
+      { date: 'Week 3', fullDate: 'Nov 02 – Nov 08', revenue: 33900, target: 30000, variance: '+13.0%' },
+      { date: 'Week 4', fullDate: 'Nov 09 – Nov 18', revenue: 35850, target: 32000, variance: '+12.0%' }
     ],
     monthlySales: [
       { name: 'Week 1', sales: 68, deals: 24 },
@@ -490,18 +643,60 @@ export const DASHBOARD_METRICS = {
     ]
   },
   '90d': {
+    context: {
+      periodLabel: 'Aug 20 – Nov 18, 2026',
+      runRate: '$1.46M ARR',
+      quotaPacing: '112% of quarterly target',
+      avgVelocity: '$4,046 / day'
+    },
     kpis: {
-      totalRevenue: { value: 364200, change: 22.8, isPositive: true },
-      mrr: { value: 24800, change: 14.5, isPositive: true },
-      totalCustomers: { value: 1429, change: 28.6, isPositive: true },
-      activeSubscriptions: { value: 1280, change: 21.4, isPositive: true },
-      churnRate: { value: 1.9, change: -0.2, isPositive: true },
-      arpu: { value: 105, change: 8.1, isPositive: true }
+      totalRevenue: {
+        value: 364200,
+        change: 22.8,
+        isPositive: true,
+        comparison: '+$67,500 vs previous 90d',
+        secondaryContext: '112% to target'
+      },
+      mrr: {
+        value: 24800,
+        change: 14.5,
+        isPositive: true,
+        comparison: '+$3,140 net new MRR',
+        secondaryContext: '110.2% net expansion'
+      },
+      totalCustomers: {
+        value: 1429,
+        change: 28.6,
+        isPositive: true,
+        comparison: '+318 new accounts',
+        secondaryContext: '97.9% retention'
+      },
+      activeSubscriptions: {
+        value: 1280,
+        change: 21.4,
+        isPositive: true,
+        comparison: '+225 active plans',
+        secondaryContext: '89.6% conversion'
+      },
+      churnRate: {
+        value: 1.9,
+        change: -0.2,
+        isPositive: true,
+        comparison: '0.2% below target',
+        secondaryContext: 'Benchmark: <2.5%'
+      },
+      arpu: {
+        value: 105,
+        change: 8.1,
+        isPositive: true,
+        comparison: '+$7.90 per tenant',
+        secondaryContext: 'Multi-seat growth'
+      }
     },
     revenueOverTime: [
-      { date: 'Month 1', revenue: 108000, target: 95000 },
-      { date: 'Month 2', revenue: 122000, target: 110000 },
-      { date: 'Month 3', revenue: 134200, target: 125000 }
+      { date: 'Month 1', fullDate: 'August 2026', revenue: 108000, target: 95000, variance: '+13.7%' },
+      { date: 'Month 2', fullDate: 'September 2026', revenue: 122000, target: 110000, variance: '+10.9%' },
+      { date: 'Month 3', fullDate: 'October 2026', revenue: 134200, target: 125000, variance: '+7.4%' }
     ],
     monthlySales: [
       { name: 'Month 1', sales: 260, deals: 95 },
@@ -515,27 +710,69 @@ export const DASHBOARD_METRICS = {
     ]
   },
   'year': {
+    context: {
+      periodLabel: 'Calendar Year 2026 (YTD)',
+      runRate: '$1.42M ARR',
+      quotaPacing: '116% of annual quota',
+      avgVelocity: '$3,914 / day'
+    },
     kpis: {
-      totalRevenue: { value: 1420800, change: 36.4, isPositive: true },
-      mrr: { value: 24800, change: 42.1, isPositive: true },
-      totalCustomers: { value: 1429, change: 54.2, isPositive: true },
-      activeSubscriptions: { value: 1280, change: 48.0, isPositive: true },
-      churnRate: { value: 2.1, change: -0.8, isPositive: true },
-      arpu: { value: 112, change: 14.8, isPositive: true }
+      totalRevenue: {
+        value: 1420800,
+        change: 36.4,
+        isPositive: true,
+        comparison: '+$379,000 vs 2025',
+        secondaryContext: '116% to quota'
+      },
+      mrr: {
+        value: 24800,
+        change: 42.1,
+        isPositive: true,
+        comparison: '+$7,350 net new MRR',
+        secondaryContext: '118% NRR'
+      },
+      totalCustomers: {
+        value: 1429,
+        change: 54.2,
+        isPositive: true,
+        comparison: '+502 new accounts',
+        secondaryContext: '98.2% retention'
+      },
+      activeSubscriptions: {
+        value: 1280,
+        change: 48.0,
+        isPositive: true,
+        comparison: '+415 active plans',
+        secondaryContext: '89.6% conversion'
+      },
+      churnRate: {
+        value: 2.1,
+        change: -0.8,
+        isPositive: true,
+        comparison: '0.8% below 2025',
+        secondaryContext: 'Benchmark: <2.5%'
+      },
+      arpu: {
+        value: 112,
+        change: 14.8,
+        isPositive: true,
+        comparison: '+$14.40 per tenant',
+        secondaryContext: 'Enterprise expansion'
+      }
     },
     revenueOverTime: [
-      { date: 'Jan', revenue: 84000, target: 80000 },
-      { date: 'Feb', revenue: 92000, target: 85000 },
-      { date: 'Mar', revenue: 101000, target: 92000 },
-      { date: 'Apr', revenue: 108000, target: 98000 },
-      { date: 'May', revenue: 114000, target: 105000 },
-      { date: 'Jun', revenue: 122000, target: 110000 },
-      { date: 'Jul', revenue: 119000, target: 112000 },
-      { date: 'Aug', revenue: 128000, target: 118000 },
-      { date: 'Sep', revenue: 131000, target: 122000 },
-      { date: 'Oct', revenue: 138000, target: 128000 },
-      { date: 'Nov', revenue: 141000, target: 132000 },
-      { date: 'Dec', revenue: 142800, target: 135000 }
+      { date: 'Jan', fullDate: 'Jan 2026', revenue: 84000, target: 80000, variance: '+5.0%' },
+      { date: 'Feb', fullDate: 'Feb 2026', revenue: 92000, target: 85000, variance: '+8.2%' },
+      { date: 'Mar', fullDate: 'Mar 2026', revenue: 101000, target: 92000, variance: '+9.8%' },
+      { date: 'Apr', fullDate: 'Apr 2026', revenue: 108000, target: 98000, variance: '+10.2%' },
+      { date: 'May', fullDate: 'May 2026', revenue: 114000, target: 105000, variance: '+8.6%' },
+      { date: 'Jun', fullDate: 'Jun 2026', revenue: 122000, target: 110000, variance: '+10.9%' },
+      { date: 'Jul', fullDate: 'Jul 2026', revenue: 119000, target: 112000, variance: '+6.3%' },
+      { date: 'Aug', fullDate: 'Aug 2026', revenue: 128000, target: 118000, variance: '+8.5%' },
+      { date: 'Sep', fullDate: 'Sep 2026', revenue: 131000, target: 122000, variance: '+7.4%' },
+      { date: 'Oct', fullDate: 'Oct 2026', revenue: 138000, target: 128000, variance: '+7.8%' },
+      { date: 'Nov', fullDate: 'Nov 2026', revenue: 141000, target: 132000, variance: '+6.8%' },
+      { date: 'Dec', fullDate: 'Dec 2026 (Est)', revenue: 142800, target: 135000, variance: '+5.8%' }
     ],
     monthlySales: [
       { name: 'Q1', sales: 680, deals: 240 },
